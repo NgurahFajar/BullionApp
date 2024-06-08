@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_main"
-    tools:context=".MainActivity">
+    tools:context=".screen.main.MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bg_white"
@@ -14,7 +14,6 @@
         android:background="@drawable/bg_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
@@ -32,7 +31,7 @@
 
         <!-- Email EditText -->
         <EditText
-            android:id="@+id/editTextEmail"
+            android:id="@+id/edtEmail"
             android:layout_width="370dp"
             android:layout_height="48dp"
             android:layout_marginTop="6dp"
@@ -59,34 +58,61 @@
             android:textColor="#91361a"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@id/editTextEmail"
-            app:layout_constraintTop_toBottomOf="@id/editTextEmail" />
+            app:layout_constraintStart_toStartOf="@id/Email_Address"
+            app:layout_constraintTop_toBottomOf="@id/edtEmail" />
 
         <!-- Password EditText -->
-        <EditText
-            android:id="@+id/editTextPassword"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ly_password"
             android:layout_width="370dp"
             android:layout_height="48dp"
             android:layout_marginTop="6dp"
-            android:hint="Place Holder"
-            android:textColorHint="@color/black"
-            android:textSize="14sp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:layout_marginEnd="24dp"
-            android:inputType="textVisiblePassword"
             android:background="@drawable/bg_form"
+            android:gravity="center"
             app:layout_constraintStart_toStartOf="@id/Password"
             app:layout_constraintTop_toBottomOf="@id/Password"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+
+            <EditText
+                android:id="@+id/edt_password"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint = "Enter your password"
+                android:textColorHint="@color/black"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:layout_marginEnd="8dp"
+                android:inputType="textPassword"
+                android:background="@null"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/ic_visibility_password"
+                />
+
+            <ImageView
+                android:id="@+id/ic_visibility_password"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_visible"
+                android:scaleType="fitXY"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_sign_in"
             android:layout_width="370dp"
             android:layout_height="47dp"
-            app:layout_constraintTop_toBottomOf="@+id/editTextPassword"
-            app:layout_constraintStart_toStartOf="@id/editTextPassword"
-            app:layout_constraintEnd_toEndOf="@id/editTextPassword"
+            app:layout_constraintTop_toBottomOf="@+id/ly_password"
+            app:layout_constraintStart_toStartOf="@id/ly_password"
             android:background="@drawable/bg_button"
             android:text="Sign In"
             android:textSize="12sp"
@@ -98,16 +124,13 @@
             android:layout_width="370dp"
             android:layout_height="47dp"
             app:layout_constraintTop_toBottomOf="@+id/btn_sign_in"
-            app:layout_constraintStart_toStartOf="@id/editTextPassword"
-            app:layout_constraintEnd_toEndOf="@id/editTextPassword"
+            app:layout_constraintStart_toStartOf="@id/ly_password"
+            app:layout_constraintEnd_toEndOf="@id/ly_password"
             android:background="@drawable/bg_button"
             android:textSize="12sp"
             android:text="Add new Users"
             android:textColor="@color/white"
             android:layout_marginTop="16dp" />
-
-
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
