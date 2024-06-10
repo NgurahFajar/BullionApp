@@ -75,6 +75,14 @@ class UpdateActivity : AppCompatActivity() {
 
     private fun setButtonActions() {
         binding.apply {
+            lyDateOfBirth.setOnClickListener {
+                startDatePicker { dateString ->
+                    dateOfBirthISO = dateString
+                    edtDateOfBirth.setText(Utility.convertIsoToDateString(dateString))
+                    edtDateOfBirth.error = null
+                }
+            }
+
             icCalendar.setOnClickListener {
                 startDatePicker { dateString ->
                     dateOfBirthISO = dateString

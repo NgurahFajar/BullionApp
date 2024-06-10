@@ -320,7 +320,7 @@
                 android:id="@+id/edt_photo_profile"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint = "Select your photo profile"
+                android:hint = "Place Holder here"
                 android:textColorHint="@color/black"
                 android:textSize="14sp"
                 android:textColor="@color/black"

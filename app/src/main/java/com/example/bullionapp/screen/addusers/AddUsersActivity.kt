@@ -77,6 +77,18 @@ class AddUsersActivity : AppCompatActivity() {
                 }
             }
 
+            icCalendar.setOnClickListener {
+                startDatePicker { dateString ->
+                    dateOfBirthISO = dateString
+                    edtDateOfBirth.setText(convertIsoToDateString(dateString))
+                    edtDateOfBirth.error = null
+                }
+            }
+
+            lyInsertPhoto.setOnClickListener {
+                startGalleryIntent()
+            }
+
             icInsertPhoto.setOnClickListener {
                 startGalleryIntent()
             }

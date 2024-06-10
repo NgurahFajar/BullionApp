@@ -132,7 +132,7 @@ object Utility {
             val bmpPicByteArray = bmpStream.toByteArray()
             streamLength = bmpPicByteArray.size
             compressQuality -= 5
-        } while (streamLength > 1000000)
+        } while (streamLength > 500000)
 
         bitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, FileOutputStream(file))
 
