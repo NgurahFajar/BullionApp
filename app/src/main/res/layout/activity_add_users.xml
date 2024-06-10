@@ -30,9 +30,9 @@
 
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/logo_bei_1_white"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:src="@drawable/logo_bullion"
             app:layout_constraintTop_toTopOf="@id/btn_back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
