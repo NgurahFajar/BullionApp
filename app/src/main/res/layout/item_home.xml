@@ -64,16 +64,6 @@
             android:layout_marginEnd="16dp"
             android:textColor="@color/black"/>
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_image"
-            app:layout_constraintEnd_toEndOf="@+id/iv_image"
-            app:layout_constraintStart_toStartOf="@+id/iv_image"
-            app:layout_constraintTop_toTopOf="@+id/iv_image" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

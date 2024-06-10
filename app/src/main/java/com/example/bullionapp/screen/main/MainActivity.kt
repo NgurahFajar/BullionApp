@@ -10,13 +10,14 @@ import android.util.Patterns
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.bullionapp.HomeActivity
+import com.example.bullionapp.screen.home.HomeActivity
 import com.example.bullionapp.R
 import com.example.bullionapp.data.remote.request.UserRequest
 import com.example.bullionapp.databinding.ActivityMainBinding
 import com.example.bullionapp.di.Injection
 import com.example.bullionapp.screen.addusers.AddUsersActivity
 import com.example.bullionapp.util.Utility
+import com.example.bullionapp.util.Utility.animateVisibility
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -29,9 +30,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mainViewModel = MainViewModel(Injection.provideAuthRepository())
+        mainViewModel = MainViewModel(Injection.provideAuthRepository(this))
         setButtonActions()
         setErrorValidateForm()
+        checkUserSession()
 
     }
 
@@ -59,6 +61,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkUserSession(){
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                showLoading(true)
+                mainViewModel.getAuthToken().collect(){
+                    if (!it.isNullOrEmpty()){
+                        navigateToHome()
+                    }
+                    showLoading(false)
+                }
+            }
+        }
+    }
+
     private fun doUserLogin(){
         var isAllFieldValid = true
 
@@ -76,6 +92,7 @@ class MainActivity : AppCompatActivity() {
 
                     lifecycleScope.launch {
                         repeatOnLifecycle(Lifecycle.State.STARTED){
+                            showLoading(true)
                             mainViewModel.userLogin(
                                 userRequest
                             ).collect {response ->
@@ -84,7 +101,8 @@ class MainActivity : AppCompatActivity() {
                                         "Success Login",
                                         Snackbar.LENGTH_LONG)
                                         .show()
-
+                                    mainViewModel.saveAuthToken(it.data?.token?:"")
+                                    showLoading(false)
                                     navigateToHome()
                                 }
 
@@ -92,6 +110,7 @@ class MainActivity : AppCompatActivity() {
                                     Snackbar.make(binding.root,
                                         "Failed Login",Snackbar.LENGTH_LONG)
                                         .show()
+                                    showLoading(false)
                                 }
 
                             }
@@ -156,6 +175,14 @@ class MainActivity : AppCompatActivity() {
         startActivity(
             Intent(this@MainActivity, HomeActivity::class.java)
         )
+
+        finish()
+    }
+
+    private fun showLoading(isLoading: Boolean){
+        binding.apply {
+            layoutLoading.root.animateVisibility(isLoading)
+        }
     }
 
 }

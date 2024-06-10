@@ -1,25 +1,18 @@
 package com.example.bullionapp.screen.addusers
 
 import android.app.DatePickerDialog
-import android.content.ContentResolver
-import android.content.Context
 import android.content.Intent
-import android.database.Cursor
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.icu.util.TimeZone
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
-import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.util.Patterns
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -27,6 +20,11 @@ import com.example.bullionapp.R
 import com.example.bullionapp.databinding.ActivityAddUsersBinding
 import com.example.bullionapp.di.Injection
 import com.example.bullionapp.util.Utility
+import com.example.bullionapp.util.Utility.animateVisibility
+import com.example.bullionapp.util.Utility.convertIsoToDateString
+import com.example.bullionapp.util.Utility.getFileNameFromUri
+import com.example.bullionapp.util.Utility.reduceFileImage
+import com.example.bullionapp.util.Utility.uriToFile
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
@@ -34,11 +32,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
 import java.util.Date
 import java.util.Locale
 
@@ -49,7 +43,6 @@ class AddUsersActivity : AppCompatActivity() {
     private var getFile: File? = null
     private var uriFile: Uri? = null
     private var dateOfBirthISO: String? = null
-
 
     private val launcherGalleryIntent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
         if(result.resultCode == RESULT_OK) {
@@ -69,7 +62,7 @@ class AddUsersActivity : AppCompatActivity() {
         binding = ActivityAddUsersBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        addUserViewModel = AddUsersViewModel(Injection.provideAuthRepository())
+        addUserViewModel = AddUsersViewModel(Injection.provideAuthRepository(this))
         setErrorValidateForm()
         setButtonActions()
     }
@@ -163,6 +156,7 @@ class AddUsersActivity : AppCompatActivity() {
                 )
                 val dateOfBirth = dateOfBirthISO.toString().toRequestBody(textPlainMediaType)
                 val email = edtEmail.text.toString().toRequestBody(textPlainMediaType)
+                val homeAddress = edtHomeAddress.text.toString().toRequestBody(textPlainMediaType)
                 val phone = edtPhoneNumber.text.toString().toRequestBody(textPlainMediaType)
                 val password = Utility.stringToSha256(edtPassword.text.toString())
                     .toRequestBody(textPlainMediaType)
@@ -175,6 +169,7 @@ class AddUsersActivity : AppCompatActivity() {
 
                 lifecycleScope.launch {
                     repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        showLoading(true)
                         addUserViewModel.addUser(
                             email = email,
                             password = password,
@@ -183,6 +178,7 @@ class AddUsersActivity : AppCompatActivity() {
                             gender = gender,
                             dateOfBirth = dateOfBirth,
                             phone = phone,
+                            address = homeAddress,
                             filePhoto = imageMultipart,
                         ).collect { response ->
                             response.onSuccess {
@@ -191,6 +187,7 @@ class AddUsersActivity : AppCompatActivity() {
                                     "Success add user",
                                     Snackbar.LENGTH_SHORT
                                 ).show()
+                                showLoading(false)
                             }
 
                             response.onFailure {
@@ -199,6 +196,7 @@ class AddUsersActivity : AppCompatActivity() {
                                     "Failed add user",
                                     Snackbar.LENGTH_SHORT
                                 ).show()
+                                showLoading(false)
                             }
                         }
                     }
@@ -262,6 +260,24 @@ class AddUsersActivity : AppCompatActivity() {
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                         if (s.isNullOrEmpty() || !Patterns.EMAIL_ADDRESS.matcher(s).matches()) {
                             edtEmail.error = "Invalid email address"
+                        }
+                    }
+                })
+
+                // Set listener change for Home Address edit text
+                edtHomeAddress.addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) {}
+
+                    override fun afterTextChanged(s: Editable?) {}
+
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                        if (s.isNullOrEmpty()) {
+                            edtHomeAddress.error = "Invalid home address"
                         }
                     }
                 })
@@ -349,79 +365,10 @@ class AddUsersActivity : AppCompatActivity() {
         datePickerDialog.show()
     }
 
-    private fun convertIsoToDateString(isoString: String, outputFormat: String = "dd-MM-yyyy"): String {
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-        inputFormat.timeZone = TimeZone.getTimeZone("UTC")
-        val outputDateFormat = SimpleDateFormat(outputFormat, Locale.getDefault())
-
-        return try {
-            val date: Date? = inputFormat.parse(isoString)
-            if (date != null) {
-                outputDateFormat.format(date)
-            } else {
-                "Invalid Date"
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            "Invalid Date"
+    private fun showLoading(isLoading:Boolean){
+        binding.apply {
+            layoutLoading.root.animateVisibility(isLoading)
         }
     }
 
-    private fun uriToFile(selectedImg: Uri, context: Context): File {
-        val contentResolver: ContentResolver = context.contentResolver
-        val myFile = createTempFile(context)
-
-        val inputStream = contentResolver.openInputStream(selectedImg) as InputStream
-        val outputStream: OutputStream = FileOutputStream(myFile)
-        val buf = ByteArray(1024)
-        var len: Int
-        while (inputStream.read(buf).also { len = it } > 0) outputStream.write(buf, 0, len)
-        outputStream.close()
-        inputStream.close()
-
-        return myFile
-    }
-
-    private fun createTempFile(context: Context): File {
-        val formatName = "dd-MMM-yyyy"
-        val timeStamp: String = java.text.SimpleDateFormat(
-            formatName,
-            Locale.US
-        ).format(System.currentTimeMillis())
-        val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(timeStamp, ".jpg", storageDir)
-    }
-    private fun getFileNameFromUri(context: Context, uri: Uri): String? {
-        var fileName: String? = null
-        val contentResolver: ContentResolver = context.contentResolver
-        val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
-        cursor?.use {
-            if (it.moveToFirst()) {
-                val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                if (nameIndex >= 0) {
-                    fileName = it.getString(nameIndex)
-                }
-            }
-        }
-        return fileName
-    }
-
-    private fun reduceFileImage(file: File): File {
-        val bitmap = BitmapFactory.decodeFile(file.path)
-
-        var compressQuality = 100
-        var streamLength: Int
-
-        do {
-            val bmpStream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, bmpStream)
-            val bmpPicByteArray = bmpStream.toByteArray()
-            streamLength = bmpPicByteArray.size
-            compressQuality -= 5
-        } while (streamLength > 1000000)
-
-        bitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, FileOutputStream(file))
-
-        return file
-    }
 }

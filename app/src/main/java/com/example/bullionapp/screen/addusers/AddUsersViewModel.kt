@@ -18,7 +18,8 @@ class AddUsersViewModel(
         gender: RequestBody,
         dateOfBirth: RequestBody,
         phone: RequestBody,
+        address: RequestBody,
         filePhoto: MultipartBody.Part
-    ): Flow<Result<RegisterResponse>> = authRepository.addUser(email, password, firstName, lastName, gender, dateOfBirth, phone, filePhoto)
+    ): Flow<Result<RegisterResponse>> = authRepository.addUser(email, password, firstName, lastName, gender, dateOfBirth, phone, address, filePhoto)
 
 }

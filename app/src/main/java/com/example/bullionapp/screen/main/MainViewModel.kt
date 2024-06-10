@@ -8,4 +8,8 @@ import kotlinx.coroutines.flow.Flow
 
 class MainViewModel(private val authRepository: AuthRepository):ViewModel() {
     suspend fun userLogin(user: UserRequest): Flow<Result<LoginResponse>> = authRepository.userLogin(user)
+
+    fun getAuthToken(): Flow<String?> = authRepository.getAuthToken()
+
+    suspend fun saveAuthToken(token:String)= authRepository.saveAuthToken(token)
 }
