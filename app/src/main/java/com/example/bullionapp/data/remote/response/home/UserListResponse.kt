@@ -33,7 +33,7 @@ data class UserItemResponse (
     @field:SerializedName("date_of_birth")
     val dateOfBirth: String,
     val email: String,
-    val photo: String,
+    var photo: String,
     val phone: String,
     val address: String?
 ): Parcelable

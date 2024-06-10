@@ -1,6 +1,5 @@
 package com.example.bullionapp.data.remote.response.update
 
-import com.example.bullionapp.data.remote.response.addusers.RegisterDataResponse
 import com.google.gson.annotations.SerializedName
 
 data class DeleteResponse(

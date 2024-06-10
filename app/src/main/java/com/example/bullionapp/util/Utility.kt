@@ -24,7 +24,6 @@ import java.util.Date
 import java.util.Locale
 
 object Utility {
-    var SHARED_TOKEN: String = ""
 
     fun stringToSha256(input: String): String {
         return try {
@@ -124,7 +123,7 @@ object Utility {
     fun reduceFileImage(file: File): File {
         val bitmap = BitmapFactory.decodeFile(file.path)
 
-        var compressQuality = 100
+        var compressQuality = 50
         var streamLength: Int
 
         do {

@@ -19,7 +19,6 @@ import com.example.bullionapp.screen.addusers.AddUsersActivity
 import com.example.bullionapp.util.Utility
 import com.example.bullionapp.util.Utility.animateVisibility
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {

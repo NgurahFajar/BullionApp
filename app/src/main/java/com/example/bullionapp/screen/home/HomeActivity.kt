@@ -95,7 +95,7 @@ class HomeActivity : AppCompatActivity() {
                             response.onFailure {
                                     Snackbar.make(
                                         binding.root,
-                                        "Failed get user list because ${it.localizedMessage}",
+                                        "Failed get user list because",
                                         Snackbar.LENGTH_SHORT
                                     ).show()
                                 showLoading(isLoading = false)
@@ -131,6 +131,7 @@ class HomeActivity : AppCompatActivity() {
                 val intent = Intent(
                     this@HomeActivity, UpdateActivity::class.java
                 ).apply {
+                    item.photo = ""
                     putExtra("SELECTED_USER", item)
                 }
 

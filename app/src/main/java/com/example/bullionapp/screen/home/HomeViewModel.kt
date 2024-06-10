@@ -13,7 +13,6 @@ class HomeViewModel(
 ):ViewModel() {
 
     fun getUserList(token: String): Flow<Result<UserListResponse>>{
-//                return userRepository.getUserList(token = "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDI4MGVmMDJlM2UxYmMwNjJiNjJiMyIsImlhdCI6MTcxNzkzNjkwNywiZXhwIjoxNzIwNTI4OTA3fQ.xPjfC_MFrzJxMWibunKkBndtTgSqvtjf1ZDKqnWhtww")
         return userRepository.getUserList(token = "Bearer " + token)
     }
 

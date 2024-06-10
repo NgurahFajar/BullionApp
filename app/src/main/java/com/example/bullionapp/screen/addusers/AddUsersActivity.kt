@@ -69,7 +69,7 @@ class AddUsersActivity : AppCompatActivity() {
 
     private fun setButtonActions() {
         binding.apply {
-            icCalendar.setOnClickListener {
+            lyDateOfBirth.setOnClickListener {
                 startDatePicker { dateString ->
                     dateOfBirthISO = dateString
                     edtDateOfBirth.setText(convertIsoToDateString(dateString))

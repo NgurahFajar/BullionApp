@@ -18,7 +18,6 @@ class UpdateViewModel(
         id: String,
         user: UserUpdateRequest
     ): Flow<Result<UpdateResponse>>
-//    = userRepository.updateUser("Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDI4MGVmMDJlM2UxYmMwNjJiNjJiMyIsImlhdCI6MTcxNzg0MDA1NywiZXhwIjoxNzIwNDMyMDU3fQ.LcA5cDc6OYUGK4IgpC1LIYc1-9Ew8Tx4O5zUkZ8ixDo", id, user)
             = userRepository.updateUser("Bearer " + token, id, user)
 
     fun getAuthToken(): Flow<String?> = authRepository.getAuthToken()
