@@ -7,7 +7,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class ApiConfig {
+class ApiConfigi{
 
     companion object {
 
@@ -22,6 +22,7 @@ class ApiConfig {
                 .addInterceptor(loggingInterceptor)
                 .build()
 
+            // retrofit
             val retrofit = Retrofit.Builder()
                 .baseUrl("https://api-test.bullionecosystem.com")
                 .addConverterFactory(GsonConverterFactory.create())
